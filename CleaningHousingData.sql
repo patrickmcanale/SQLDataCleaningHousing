@@ -9,7 +9,10 @@ FROM Project.dbo.NashvilleHousing
 SELECT SaleDateConverted, CONVERT(Date,SaleDate)
 FROM Project.dbo.NashvilleHousing
 
+
 --SET the new date format in the table
+
+
 
 UPDATE Project.dbo.NashvilleHousing
 SET SaleDate - CONVERT(Date,SaleDate)
@@ -31,9 +34,8 @@ order by parcelid
 
 
 
---Self join NashvilleHousing as table a and table b. 
---on parcelID. Also uniqueId does not match.
---propertyaddress is null
+--Self join NashvilleHousing as table a, table b. 
+--on parcelID where equals and uniqueId where not equals
 
 
 
@@ -63,6 +65,7 @@ WHERE a.propertyAddress is null
 
 
 --break out address into individual columns (Address, city, state)
+-use replace function to separate out address
 
 
 
@@ -92,18 +95,13 @@ SET OwnerSplitState = PARSENAME(REPLACE(OwnerAddress,',','.'),1)
 
 
 
-
---"sold as vacant" field- change 'y/n' to 'yes/no'
-
-
-
 SELECT DISTINCT(soldasvacant), COUNT(soldasvacant)
 from Project.dbo.NashvilleHousing
 group by soldasvacant
 order by 2
 
 
-
+--change "sold as vacant" field- from 'y/n' to 'yes/no'
 --case statement if y then change to yes. or n change to no..else leave as soldasvacant
 
 
@@ -116,6 +114,11 @@ SELECT soldasvacant,
 FROM Project.dbo.NashvilleHousing
 
 
+
+--update the table with case statement
+
+
+
 UPDATE Project.dbo.NashvilleHousing
 SET soldasvacant = CASE WHEN soldasvacant = 'Y' THEN 'Yes'
 		 WHEN soldasvacant = 'N' THEN 'No'
@@ -123,8 +126,12 @@ SET soldasvacant = CASE WHEN soldasvacant = 'Y' THEN 'Yes'
 		 END
 
 
+
+
 --remove duplicates from table
 --create rowNumCTE
+--delete if row_num is greater than 1
+
 
 WITH RowNumCTE AS(
 SELECT *,
